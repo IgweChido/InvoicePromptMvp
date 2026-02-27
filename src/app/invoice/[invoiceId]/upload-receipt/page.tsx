@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useDemo } from '@/context/DemoContext';
@@ -18,6 +18,13 @@ export default function UploadReceiptPage() {
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+    };
+  }, []);
 
   async function handleUpload() {
     if (!file) {
@@ -43,7 +50,7 @@ export default function UploadReceiptPage() {
           uploadedAt: new Date().toISOString(),
         });
         setMsg('Receipt uploaded successfully!');
-        setTimeout(() => router.push(bookingId ? `/bookings/${bookingId}` : `/invoice/${invoiceId}`), 1500);
+        redirectTimerRef.current = setTimeout(() => router.push(bookingId ? `/bookings/${bookingId}` : `/invoice/${invoiceId}`), 1500);
       } else {
         // Real upload via API
         const formData = new FormData();
@@ -57,7 +64,7 @@ export default function UploadReceiptPage() {
 
         if (res.ok) {
           setMsg(`Receipt uploaded successfully! URL: ${data.receiptUrl}`);
-          setTimeout(() => router.push(`/invoice/${invoiceId}`), 2000);
+          redirectTimerRef.current = setTimeout(() => router.push(`/invoice/${invoiceId}`), 2000);
         } else {
           setError(data.error || 'Upload failed');
         }

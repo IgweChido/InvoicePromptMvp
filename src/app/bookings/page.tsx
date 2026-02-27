@@ -9,6 +9,8 @@ const APP_URL =
     ? window.location.origin
     : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
+const DEMO_FALLBACK_PHONE = '14155552671';
+
 export default function BookingsPage() {
   const { state, startDemo, advanceFlow, setChannel, resetDemo } = useDemo();
   const [sendingEmail, setSendingEmail] = useState(false);
@@ -41,6 +43,8 @@ export default function BookingsPage() {
       const data = await res.json();
       if (res.ok) {
         setEmailMsg(data.warning || 'Email sent successfully!');
+      } else if (data.fallback) {
+        setEmailMsg(data.warning || 'Resend not configured — skipping real send.');
       } else {
         setEmailMsg(data.error || 'Failed to send email');
         setSendingEmail(false);
@@ -56,7 +60,7 @@ export default function BookingsPage() {
   }
 
   function handleWhatsApp() {
-    const phone = state.booking?.customerPhone?.replace(/\D/g, '') ?? '14155552671';
+    const phone = state.booking?.customerPhone?.replace(/\D/g, '') ?? DEMO_FALLBACK_PHONE;
     const msg = encodeURIComponent(
       `Hi ${state.booking?.customerName ?? 'there'}! Your invoice for shipment ${state.booking?.trackingNumber ?? ''} is ready. Please view and pay at: ${invoiceLink}`
     );

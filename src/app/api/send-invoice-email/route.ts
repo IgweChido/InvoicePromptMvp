@@ -13,8 +13,10 @@ export async function POST(request: Request) {
     const fromEmail = process.env.RESEND_FROM_EMAIL;
 
     if (!apiKey || !fromEmail) {
+      console.log('[send-invoice-email] Resend not configured. Invoice link:', invoiceLink);
       return NextResponse.json({
-        success: true,
+        success: false,
+        fallback: true,
         warning: '⚠️ Resend is not configured. Set RESEND_API_KEY and RESEND_FROM_EMAIL to enable real sending. (Demo: invoice link logged to console.)',
       });
     }
