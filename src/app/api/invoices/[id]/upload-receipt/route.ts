@@ -7,12 +7,13 @@ import path from 'path';
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
 
-    const invoice = await InvoiceModel.findById(params.id);
+    const invoice = await InvoiceModel.findById(id);
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
@@ -35,7 +36,7 @@ export async function POST(
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
     await mkdir(uploadsDir, { recursive: true });
 
-    const filename = `receipt-${params.id}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    const filename = `receipt-${id}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     const filepath = path.join(uploadsDir, filename);
     const bytes = await file.arrayBuffer();
     await writeFile(filepath, Buffer.from(bytes));
@@ -43,14 +44,14 @@ export async function POST(
     const receiptUrl = `/uploads/${filename}`;
 
     // Update invoice
-    await InvoiceModel.findByIdAndUpdate(params.id, {
+    await InvoiceModel.findByIdAndUpdate(id, {
       status: 'PAID',
       receiptUrl,
     });
 
     // Create PaymentReceipt record
     await PaymentReceiptModel.create({
-      invoiceId: params.id,
+      invoiceId: id,
       customerId: invoice.customerId,
       fileUrl: receiptUrl,
       uploadedAt: new Date(),

@@ -6,12 +6,13 @@ import PaymentReceiptModel from '@/models/PaymentReceipt';
 
 export async function POST(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
 
-    const invoice = await InvoiceModel.findById(params.id);
+    const invoice = await InvoiceModel.findById(id);
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
@@ -24,14 +25,14 @@ export async function POST(
     }
 
     // Update invoice to VERIFIED
-    await InvoiceModel.findByIdAndUpdate(params.id, { status: 'VERIFIED' });
+    await InvoiceModel.findByIdAndUpdate(id, { status: 'VERIFIED' });
 
     // Update shipment to INVOICE_SETTLED
     await ShipmentModel.findByIdAndUpdate(invoice.shipmentId, { status: 'INVOICE_SETTLED' });
 
     // Mark receipt as verified
     await PaymentReceiptModel.findOneAndUpdate(
-      { invoiceId: params.id },
+      { invoiceId: id },
       { verifiedAt: new Date() }
     );
 

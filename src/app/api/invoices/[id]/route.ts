@@ -4,11 +4,12 @@ import InvoiceModel from '@/models/Invoice';
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const invoice = await InvoiceModel.findById(params.id);
+    const invoice = await InvoiceModel.findById(id);
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }

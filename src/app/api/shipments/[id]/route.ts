@@ -4,11 +4,12 @@ import ShipmentModel from '@/models/Shipment';
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const shipment = await ShipmentModel.findById(params.id);
+    const shipment = await ShipmentModel.findById(id);
     if (!shipment) {
       return NextResponse.json({ error: 'Shipment not found' }, { status: 404 });
     }
