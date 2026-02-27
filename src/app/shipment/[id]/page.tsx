@@ -56,7 +56,7 @@ export default function ShipmentDetailPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setMsg(`Status updated to ${status}! Invoice has been created.`);
+        setMsg(`Status updated to ${status}!${status === 'DELIVERED' ? ' Invoice has been created.' : ''}`);
         fetchShipment();
       } else {
         setError(data.error || 'Error updating status');

@@ -90,4 +90,3 @@ src/
     ├── invoiceService.ts       # Invoice creation logic
     └── QuickbooksService.ts    # Mock QuickBooks integration
 ```
-invoice promt mvp

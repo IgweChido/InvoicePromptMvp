@@ -7,6 +7,7 @@ import InvoiceModel from '@/models/Invoice';
 import { QuickbooksService } from './QuickbooksService';
 
 const TAX_RATE = 0.1; // 10% tax
+const DEFAULT_BASE_RATE = 100; // Default rate when no quote is available
 const BASE_URL = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
 
 export async function createInvoiceFromShipment(shipmentId: string) {
@@ -28,7 +29,7 @@ export async function createInvoiceFromShipment(shipmentId: string) {
   const contract = await ContractAgreementModel.findOne({ customerId: shipment.customerId });
 
   // Calculate amounts
-  const baseRate = quote?.baseRate ?? 100;
+  const baseRate = quote?.baseRate ?? DEFAULT_BASE_RATE;
   const adjustments = quote?.adjustments ?? 0;
   const subtotal = baseRate + adjustments;
   const tax = subtotal * TAX_RATE;
