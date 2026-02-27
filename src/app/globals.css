@@ -52,6 +52,9 @@ h2 {
 .badge-invoice-sent { background: #b8daff; color: #004085; }
 .badge-invoice-settled { background: #c3e6cb; color: #155724; }
 .badge-in-transit { background: #e2e3e5; color: #383d41; }
+.badge-confirmed { background: #d4edda; color: #155724; }
+.badge-accepted { background: #cce5ff; color: #004085; }
+.badge-sailing { background: #bee5eb; color: #0c5460; }
 
 .btn {
   display: inline-block;
@@ -70,6 +73,8 @@ h2 {
 .btn-success { background: #28a745; color: white; }
 .btn-danger { background: #dc3545; color: white; }
 .btn-secondary { background: #6c757d; color: white; }
+.btn-demo { background: linear-gradient(135deg, #0070f3, #7928ca); color: white; font-weight: 600; padding: 0.6rem 1.5rem; }
+.btn-whatsapp { background: #25d366; color: white; }
 
 a { color: #0070f3; text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -150,4 +155,62 @@ tr:hover { background: #fafafa; }
 
 @media (max-width: 768px) {
   .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ── Demo flow overlays ── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 14px;
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideUp 0.25s ease;
+}
+
+.demo-toast {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: #0c5460;
+  color: white;
+  padding: 0.85rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  font-weight: 500;
+  animation: slideInRight 0.3s ease, fadeOut 0.5s ease 2s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
