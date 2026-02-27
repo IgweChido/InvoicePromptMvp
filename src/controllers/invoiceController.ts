@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as InvoiceService from '../services/InvoiceService';
-import { onShipmentStatusUpdate } from '../services/InvoiceService';
 import { ShipmentStatus } from '../models/Shipment';
 
 export const updateShipmentStatus = async (req: Request, res: Response): Promise<void> => {
@@ -13,7 +12,7 @@ export const updateShipmentStatus = async (req: Request, res: Response): Promise
       return;
     }
 
-    await onShipmentStatusUpdate(shipmentId, status);
+    await InvoiceService.onShipmentStatusUpdate(shipmentId, status);
     res.json({ message: `Shipment ${shipmentId} status updated to ${status}` });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
